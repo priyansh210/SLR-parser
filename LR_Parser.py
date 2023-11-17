@@ -2,6 +2,7 @@ from pprint import *
 import pandas as pd
 from IPython.display import display, HTML
 
+
 class Grammar:
     def __init__(self, grammar_str):
         self.grammar_str = grammar_str
@@ -220,12 +221,6 @@ class SLRParser:
         def fprint(text, variable):
             print(f'{text:>12}: {", ".join(variable)}')
 
-        def print_line():
-            print(f'+{("-" * width + "+") * (len(list(self.G_prime.symbols) + ["$"]))}')
-
-        def symbols_width(symbols):
-            return (width + 1) * len(symbols) - 1
-
         print("AUGMENTED GRAMMAR:")
 
         for i, (head, body) in enumerate(self.G_indexed):
@@ -253,13 +248,14 @@ class SLRParser:
         for head in self.G_prime.grammar:
             print(f'{head} = {{ {", ".join(self.follow[head])} }}')
 
-        headers = ['ACTION']*(1+len(self.G_prime.terminals))+['GOTO']*(len(self.G_prime.nonterminals)-1)
-
+        headers = ["ACTION"] * (1 + len(self.G_prime.terminals)) + ["GOTO"] * (
+            len(self.G_prime.nonterminals) - 1
+        )
 
         print("\nPARSING TABLE:")
         print()
         PARSE_TABLE = pd.DataFrame(self.parse_table).T
-        PARSE_TABLE.columns = [headers,list(PARSE_TABLE.columns)]
+        PARSE_TABLE.columns = [headers, list(PARSE_TABLE.columns)]
         print(PARSE_TABLE)
 
     def LR_parser(self, w):
@@ -334,12 +330,11 @@ class SLRParser:
 
     def print_LR_parser(self, results):
         df = pd.DataFrame(results)
-        df.style.set_table_styles([{'selector' : '', 
-                            'props' : [('border', 
-                                        '10px solid yellow')]}]) 
-        print('\n')
+        df.style.set_table_styles(
+            [{"selector": "", "props": [("border", "10px solid yellow")]}]
+        )
+        print("\n")
         print(df)
-
 
 
 filename = "testGrammar.txt"
@@ -349,13 +344,13 @@ with open(filename, "r") as f:
     file_contents = f.readlines()
     grammar_str = "".join(filter(None, file_contents))
 
-#create a Grammar object
+# create a Grammar object
 G = Grammar(grammar_str)
 
 slr_parser = SLRParser(G)
 slr_parser.print_info()
 
-TOKEN = 'id + id + id * id'
+TOKEN = "id + id + id * id"
 
 results = slr_parser.LR_parser(TOKEN)
 slr_parser.print_LR_parser(results)
